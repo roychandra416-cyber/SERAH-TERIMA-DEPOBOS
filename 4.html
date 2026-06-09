@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Serah Terima Jobdesk</title>
+
+<style>
+body{
+margin:0;
+padding:20px;
+font-family:Segoe UI,sans-serif;
+background:url('https://i.pinimg.com/originals/b7/37/92/b73792b908e4f19de49946022ecaa94b.gif') center/cover fixed;
+}
+
+.box{
+max-width:900px;
+margin:auto;
+background:rgba(0,0,0,.65);
+backdrop-filter:blur(8px);
+padding:25px;
+border-radius:20px;
+color:#fff;
+box-shadow:0 0 25px cyan;
+}
+
+h1,h2{
+text-align:center;
+color:cyan;
+text-shadow:0 0 10px cyan;
+}
+
+.item{
+margin:12px 0;
+}
+
+label{
+display:block;
+margin-bottom:5px;
+font-weight:bold;
+}
+
+input[type=text],textarea,select{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:rgba(255,255,255,.15);
+color:#fff;
+outline:none;
+}
+
+textarea{
+height:100px;
+resize:none;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+margin-top:10px;
+}
+
+.btn-save{
+background:cyan;
+color:black;
+}
+
+.btn-reset{
+background:#ff4444;
+color:white;
+}
+
+.list{
+margin-top:10px;
+padding:12px;
+border-left:4px solid cyan;
+background:rgba(255,255,255,.08);
+border-radius:10px;
+}
+
+.footer{
+text-align:center;
+margin-top:20px;
+color:cyan;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>📋 SERAH TERIMA JOBDESK</h1>
+
+<div class="item">
+<label><input type="checkbox" id="saldo"> SUDAH CEK SALDO</label>
+</div>
+
+<div class="item">
+<label><input type="checkbox" id="kas"> KAS KLOP</label>
+</div>
+
+<div class="item">
+<label>KENDALA LAINNYA</label>
+<textarea id="kendala" placeholder="Tuliskan kendala atau catatan"></textarea>
+</div>
+
+<div class="item">
+<label>SERAH TERIMA KEPADA</label>
+<input type="text" id="penerima" placeholder="Nama penerima">
+</div>
+
+<div class="item">
+<label>YANG BERTUGAS</label>
+<input type="text" id="petugas" placeholder="Nama petugas">
+</div>
+
+<div class="item">
+<label>STATUS</label>
+<select id="status">
+<option value="AMAN">AMAN</option>
+<option value="TIDAK AMAN">TIDAK AMAN</option>
+</select>
+</div>
+
+<button class="btn-save" onclick="simpan()">
+💾 SIMPAN SERAH TERIMA
+</button>
+
+<button class="btn-reset" onclick="resetData()">
+🗑 RESET DATA
+</button>
+
+<h2>📋 DAFTAR SERAH TERIMA</h2>
+
+<div id="riwayat"></div>
+
+<div class="footer">
+DASHBOARD BY ROY CHAN
+</div>
+
+</div>
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("serahTerima")) || [];
+
+function tampil(){
+
+let html="";
+
+data.forEach((d,i)=>{
+
+html += `
+<div class="list">
+<b>${i+1}.</b>
+YANG BERTUGAS <b>${d.petugas}</b>
+ ➜ SERAH TERIMA KEPADA
+ <b>${d.penerima}</b>
+ = <b>${d.status}</b>
+ <br><br>
+
+Saldo :
+ ${d.saldo ? "✔ Sudah Dicek" : "✘ Belum Dicek"}
+ <br>
+
+Kas :
+ ${d.kas ? "✔ Klop" : "✘ Tidak Klop"}
+ <br>
+
+Kendala :
+ ${d.kendala || "-"}
+</div>
+`;
+
+});
+
+document.getElementById("riwayat").innerHTML = html;
+
+}
+
+function simpan(){
+
+const item = {
+
+saldo:document.getElementById("saldo").checked,
+kas:document.getElementById("kas").checked,
+kendala:document.getElementById("kendala").value,
+penerima:document.getElementById("penerima").value,
+petugas:document.getElementById("petugas").value,
+status:document.getElementById("status").value
+
+};
+
+if(!item.petugas || !item.penerima){
+
+alert("Isi Nama Petugas dan Penerima!");
+
+return;
+
+}
+
+data.push(item);
+
+localStorage.setItem(
+"serahTerima",
+JSON.stringify(data)
+);
+
+tampil();
+
+document.getElementById("kendala").value="";
+document.getElementById("penerima").value="";
+document.getElementById("petugas").value="";
+document.getElementById("saldo").checked=false;
+document.getElementById("kas").checked=false;
+
+alert("✅ Serah Terima Berhasil Disimpan");
+
+}
+
+function resetData(){
+
+if(confirm("Yakin ingin menghapus seluruh data?")){
+
+data=[];
+
+localStorage.removeItem("serahTerima");
+
+document.getElementById("riwayat").innerHTML="";
+
+alert("✅ Semua data berhasil dihapus");
+
+}
+
+}
+
+tampil();
+
+</script>
+
+</body>
+</html>
